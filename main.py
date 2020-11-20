@@ -22,20 +22,24 @@ Subject: {subject}
 """
 
 
+def send_email(subject, text):
+    with smtplib.SMTP(GMAIL_HOST, 587) as smtpobj:
+        smtpobj.ehlo()
+        smtpobj.starttls()
+        smtpobj.login(GMAIL_USER, GMAIL_PASSWORD)
+        smtpobj.sendmail(GMAIL_USER, [GMAIL_USER, ],
+                         MESSAGE.format(NAME=NAME, GMAIL_USER=GMAIL_USER,
+                                        subject=subject, text=text))
+
+
 def main():
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
-    smtpobj = smtplib.SMTP(GMAIL_HOST, 587)
-    smtpobj.ehlo()
-    smtpobj.starttls()
-    smtpobj.login(GMAIL_USER, GMAIL_PASSWORD)
 
     while True:
         r = requests.get(URL)
         if r.status_code != 200:
             try:
-                smtpobj.sendmail(GMAIL_USER, [GMAIL_USER, ],
-                                 MESSAGE.format(NAME=NAME, GMAIL_USER=GMAIL_USER,
-                                                subject="PlayStation 5 ERROR", text="Status code "+str(r.status_code)))
+                send_email(subject="PlayStation 5 ERROR", text="Status code " + str(r.status_code))
             except smtplib.SMTPException:
                 print("Error while sending error email...")
             time.sleep(SLEEP_TIME)
@@ -54,9 +58,7 @@ def main():
 
         if found != 6:  # somehow there are 6 instances in code, not 3
             try:
-                smtpobj.sendmail(GMAIL_USER, [GMAIL_USER, ],
-                                 MESSAGE.format(NAME=NAME, GMAIL_USER=GMAIL_USER,
-                                                subject="PlayStation 5", text=SUCCESS_TEXT))
+                send_email(subject="PlayStation 5", text=SUCCESS_TEXT)
             except smtplib.SMTPException:
                 print("Error while sending email...")
             print("Sent an email...")

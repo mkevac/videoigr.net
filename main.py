@@ -2,6 +2,7 @@ import time
 import requests
 import smtplib
 import os
+import logging
 
 SLEEP_TIME = 60
 URL = "https://videoigr.net/catalog/playstation-5-155/pristavki-156/"
@@ -22,6 +23,7 @@ Subject: {subject}
 
 
 def main():
+    logging.basicConfig(level=logging.INFO)
     smtpobj = smtplib.SMTP(GMAIL_HOST, 587)
     smtpobj.ehlo()
     smtpobj.starttls()
@@ -47,6 +49,8 @@ def main():
                 break
             found += 1
             start = i + 1
+
+        logging.info("found {}".format(found))
 
         if found != 6:  # somehow there are 6 instances in code, not 3
             try:

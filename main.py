@@ -23,7 +23,7 @@ Subject: {subject}
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
     smtpobj = smtplib.SMTP(GMAIL_HOST, 587)
     smtpobj.ehlo()
     smtpobj.starttls()

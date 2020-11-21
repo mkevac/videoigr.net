@@ -36,7 +36,12 @@ def main():
     logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
     while True:
-        r = requests.get(URL)
+        try:
+            r = requests.get(URL, timeout=5.0)
+        except requests.RequestException:
+            logging.error("error while getting URL")
+            time.sleep(SLEEP_TIME)
+            continue
         if r.status_code != 200:
             try:
                 send_email(subject="PlayStation 5 ERROR", text="Status code " + str(r.status_code))

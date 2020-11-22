@@ -62,7 +62,7 @@ def main():
 
         logging.info("found {}".format(found))
 
-        if found != 4:
+        if found != 6:
             try:
                 send_email(subject="PlayStation 5", text=SUCCESS_TEXT)
             except smtplib.SMTPException:

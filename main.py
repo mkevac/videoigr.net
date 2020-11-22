@@ -37,16 +37,17 @@ def main():
 
     while True:
         try:
-            r = requests.get(URL, timeout=5.0)
+            r = requests.get(URL, timeout=10.0)
         except requests.RequestException:
             logging.error("error while getting URL")
             time.sleep(SLEEP_TIME)
             continue
         if r.status_code != 200:
-            try:
-                send_email(subject="PlayStation 5 ERROR", text="Status code " + str(r.status_code))
-            except smtplib.SMTPException:
-                print("Error while sending error email...")
+            logging.error("error code {}".format(r.status_code))
+            time.sleep(SLEEP_TIME)
+            continue
+        if len(r.text) == 0:
+            logging.error("empty result")
             time.sleep(SLEEP_TIME)
             continue
 
@@ -61,7 +62,7 @@ def main():
 
         logging.info("found {}".format(found))
 
-        if found != 6:  # somehow there are 6 instances in code, not 3
+        if found != 4:
             try:
                 send_email(subject="PlayStation 5", text=SUCCESS_TEXT)
             except smtplib.SMTPException:
